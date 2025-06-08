@@ -1,3 +1,3 @@
-https://craftinginterpreters.com/statements-and-state.html
+https://craftinginterpreters.com/resolving-and-binding.html
 
-8.4 Assignment
+11

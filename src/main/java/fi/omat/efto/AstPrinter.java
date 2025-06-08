@@ -6,9 +6,18 @@ class AstPrinter implements Expr.Visitor<String> {
     }
 
     @Override
+    public String visitAssignExpr(Expr.Assign expr) {
+        return parenthesize(expr.name.lexeme, expr.value);
+    }
+
+    @Override
     public String visitBinaryExpr(Expr.Binary expr) {
-        return parenthesize(expr.operator.lexeme,
-                expr.left, expr.right);
+        return parenthesize(expr.operator.lexeme, expr.left, expr.right);
+    }
+
+    @Override
+    public String visitCallExpr(Expr.Call expr) {
+        return parenthesize(print(expr.callee), expr.arguments.toArray(new Expr[0]));
     }
 
     @Override
@@ -23,8 +32,26 @@ class AstPrinter implements Expr.Visitor<String> {
     }
 
     @Override
+    public String visitLogicalExpr(Expr.Logical expr) {
+        return parenthesize(expr.operator.lexeme, expr.left, expr.right);
+    }
+
+    @Override
     public String visitUnaryExpr(Expr.Unary expr) {
         return parenthesize(expr.operator.lexeme, expr.right);
+    }
+
+    @Override
+    public String visitVariableExpr(Expr.Variable expr) {
+        if (expr.name.lexeme == null) return "nil";
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("(").append(expr.name.lexeme);
+        builder.append(" ").append(expr.name.literal.toString());
+        builder.append(")");
+
+        return builder.toString();
     }
 
     private String parenthesize(String name, Expr... exprs) {
