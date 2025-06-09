@@ -1,3 +1,3 @@
-https://craftinginterpreters.com/classes.html
+https://craftinginterpreters.com/inheritance.html
 
-12.6
+13

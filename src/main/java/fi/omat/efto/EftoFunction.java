@@ -17,7 +17,7 @@ class EftoFunction implements EftoCallable {
     EftoFunction bind(EftoInstance instance) {
         Environment environment = new Environment(closure);
         environment.define("this", instance);
-        return new EftoFunction(declaration, environment, isInitializer);;
+        return new EftoFunction(declaration, environment, isInitializer);
     }
 
     @Override
