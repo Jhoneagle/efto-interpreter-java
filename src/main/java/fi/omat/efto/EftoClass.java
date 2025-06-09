@@ -5,9 +5,11 @@ import java.util.Map;
 
 class EftoClass implements EftoCallable {
     final String name;
+    final EftoClass superclass;
     private final Map<String, EftoFunction> methods;
 
-    EftoClass(String name, Map<String, EftoFunction> methods) {
+    EftoClass(String name, EftoClass superclass, Map<String, EftoFunction> methods) {
+        this.superclass = superclass;
         this.name = name;
         this.methods = methods;
     }
@@ -15,6 +17,10 @@ class EftoClass implements EftoCallable {
     EftoFunction findMethod(String name) {
         if (methods.containsKey(name)) {
             return methods.get(name);
+        }
+
+        if (superclass != null) {
+            return superclass.findMethod(name);
         }
 
         return null;

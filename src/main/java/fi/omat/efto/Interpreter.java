@@ -68,6 +68,23 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Object visitSuperExpr(Expr.Super expr) {
+        int distance = locals.get(expr);
+        EftoClass superclass = (EftoClass)environment.getAt(distance, "super");
+
+        EftoInstance object = (EftoInstance)environment.getAt(distance - 1, "this");
+
+        EftoFunction method = superclass.findMethod(expr.method.lexeme);
+
+        if (method == null) {
+            throw new RuntimeError(expr.method,
+                    "Undefined property '" + expr.method.lexeme + "'.");
+        }
+
+        return method.bind(object);
+    }
+
+    @Override
     public Object visitThisExpr(Expr.This expr) {
         return lookUpVariable(expr.keyword, expr);
     }
@@ -223,7 +240,21 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitClassStmt(Stmt.Class stmt) {
+        Object superclass = null;
+        if (stmt.superclass != null) {
+            superclass = evaluate(stmt.superclass);
+            if (!(superclass instanceof EftoClass)) {
+                throw new RuntimeError(stmt.superclass.name,
+                        "Superclass must be a class.");
+            }
+        }
+
         environment.define(stmt.name.lexeme, null);
+
+        if (stmt.superclass != null) {
+            environment = new Environment(environment);
+            environment.define("super", superclass);
+        }
 
         Map<String, EftoFunction> methods = new HashMap<>();
         for (Stmt.Function method : stmt.methods) {
@@ -231,7 +262,11 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             methods.put(method.name.lexeme, function);
         }
 
-        EftoClass klass = new EftoClass(stmt.name.lexeme, methods);
+        EftoClass klass = new EftoClass(stmt.name.lexeme, (EftoClass)superclass, methods);
+
+        if (superclass != null) {
+            environment = environment.enclosing;
+        }
 
         environment.assign(stmt.name, klass);
         return null;

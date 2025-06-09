@@ -1,3 +1,3 @@
-https://craftinginterpreters.com/inheritance.html
+https://craftinginterpreters.com/chunks-of-bytecode.html
 
-13
+14
