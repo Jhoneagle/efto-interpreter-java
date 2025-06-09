@@ -5,10 +5,19 @@ import java.util.List;
 class EftoFunction implements EftoCallable {
     private final Stmt.Function declaration;
     private final Environment closure;
+    private final boolean isInitializer;
 
-    EftoFunction(Stmt.Function declaration, Environment closure) {
+    EftoFunction(Stmt.Function declaration, Environment closure,
+                 boolean isInitializer) {
         this.closure = closure;
         this.declaration = declaration;
+        this.isInitializer = isInitializer;
+    }
+
+    EftoFunction bind(EftoInstance instance) {
+        Environment environment = new Environment(closure);
+        environment.define("this", instance);
+        return new EftoFunction(declaration, environment, isInitializer);;
     }
 
     @Override
@@ -32,9 +41,12 @@ class EftoFunction implements EftoCallable {
         try {
             interpreter.executeBlock(declaration.body, environment);
         } catch (Return returnValue) {
+            if (isInitializer) return closure.getAt(0, "this");
+
             return returnValue.value;
         }
 
+        if (isInitializer) return closure.getAt(0, "this");
         return null;
     }
 }
