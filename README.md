@@ -1,3 +1,3 @@
-https://craftinginterpreters.com/chunks-of-bytecode.html
+# Interpreter for Efto coding language
 
-14
+All the code until [dummy release](https://github.com/Jhoneagle/efto-interpreter-java/releases/tag/guided-learning) are intellectual property of a book called [Crafting interpreters by Robert Nystrom](https://craftinginterpreters.com/). This repository contains the design from first half of the book that was done in java in order to learn how interpreters work in a relatively high/basic level. My learning experience from following the second half of the book can be found in [here](https://github.com/Jhoneagle/efto-interpreter-c). Any and al code changes after [dummy release](https://github.com/Jhoneagle/efto-interpreter-java/releases/tag/guided-learning) will be unrealted to the book and thus more or less my personal adventures in the world of interpreters. 
